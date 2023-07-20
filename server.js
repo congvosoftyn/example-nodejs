@@ -12,5 +12,8 @@ app.get('/', (req, res) => {
     res.send('hello from simple server :)')
 })
 
+app.get('/hello-world', (req, res) => {
+    res.send("hello world!")
+})
 
 app.listen(port, () => console.log('> Server is up and running on port : ' + port))
