@@ -1,16 +1,15 @@
 const express = require('express')
 const app = express()
 require('dotenv').config()
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 3000
+const cors = require("cors");
 
-// !important! 
-// you need to install the following libraries |express|[dotenv > if required]
-// or run this command >> npm i express dotenv 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(cors())
 
 app.get('/', (req, res) => {
-
     res.send('hello from simple server :)')
-
 })
 
 
