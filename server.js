@@ -16,4 +16,8 @@ app.get('/hello-world', (req, res) => {
     res.send("hello world!")
 })
 
+app.get('/about', (req, res) => {
+    res.send("about!")
+})
+
 app.listen(port, () => console.log('> Server is up and running on port : ' + port))
