@@ -1,27 +1,38 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:16-alpine' 
-            args '-p 3000:3000' 
-        }
+    agent {label 'linux'}
+
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('dockerhub')
     }
     stages {
-        stage('Build') { 
+        stage('gitclone') { 
             steps {
-                sh 'npm install' 
+                git 'https://github.com/congvosoftyn/example-nodejs.git'
             }
         }
-        stage('Test') {
+
+        stage('Build') {
             steps {
-                sh './jenkins/scripts/test.sh'
+                sh 'docker build -t congvosoftyn/node-web-app:latest .'
             }
         }
-        stage('Deliver') { 
+        
+        stage('Login') {
             steps {
-                sh './jenkins/scripts/deliver.sh' 
-                input message: 'Finished using the web site? (Click "Proceed" to continue)' 
-                sh './jenkins/scripts/kill.sh' 
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
+        }
+
+        stage('Push') {
+            steps {
+                sh 'docker push congvosoftyn/node-web-app:latest'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
