@@ -20,4 +20,15 @@ app.get('/about', (req, res) => {
     res.send("about!")
 })
 
+app.use((req, res, next) => {
+    const error = new Error("Not found!");
+    next(error)
+})
+
+app.use((error, req, res, next) => {
+    return res.status(error.status || 500).json({
+        message: error.message
+    })
+})
+
 app.listen(port, () => console.log('> Server is up and running on port : ' + port))
