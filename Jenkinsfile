@@ -1,18 +1,19 @@
 pipeline {
     agent any
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr:'5'))
-    }
-
     enviroment {
         DOCKERHUB_CREDENTIALS = credentials('github')
     }
 
     stages {
+        stage('gitclone') {
+            steps {
+                git 'https://github.com/congvosoftyn/example-nodejs.git'
+            }
+        }
         stage('Build') {
             steps {
-                sh 'docker build -t congvosoftyn/node-web-app .'
+                sh 'docker build -t congvosoftyn/node-web-app:latest .'
             }
         }
         stage('Login') {
@@ -22,7 +23,7 @@ pipeline {
         }
         stage('Push') {
             steps {
-                sh 'docker push congvosoftyn/node-web-app'
+                sh 'docker push congvosoftyn/node-web-app:latest'
             }
         }
     }
